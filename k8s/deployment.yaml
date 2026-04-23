@@ -5,7 +5,7 @@ metadata:
   labels:
     app: exam-app
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: exam-app
@@ -17,7 +17,7 @@ spec:
       containers:
       - name: exam-app
         # Make sure to replace <YOUR_DOCKERHUB_USERNAME> below
-        image: <YOUR_DOCKERHUB_USERNAME>/exam-app:v1
+        image: umarnawaz001/exam-app:v1
         ports:
         - containerPort: 3000
         env:
