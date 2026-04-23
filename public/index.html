@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Exam App</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
+        h1 { color: #333; }
+        #status { font-weight: bold; margin-top: 20px; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the DevOps Exam App</h1>
+        <p>Frontend is running successfully.</p>
+        <button onclick="checkStatus()">Check Backend & Database Status</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function checkStatus() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = 'Checking...';
+            statusDiv.className = '';
+            try {
+                const response = await fetch('/api/status');
+                const data = await response.json();
+                if (response.ok) {
+                    statusDiv.textContent = data.message;
+                    statusDiv.className = 'success';
+                } else {
+                    statusDiv.textContent = data.message;
+                    statusDiv.className = 'error';
+                }
+            } catch (error) {
+                statusDiv.textContent = 'Failed to connect to backend API.';
+                statusDiv.className = 'error';
+            }
+        }
+    </script>
+</body>
+</html>

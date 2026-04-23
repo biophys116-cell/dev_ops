@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: exam-app-deployment
+  labels:
+    app: exam-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: exam-app
+  template:
+    metadata:
+      labels:
+        app: exam-app
+    spec:
+      containers:
+      - name: exam-app
+        # Make sure to replace <YOUR_DOCKERHUB_USERNAME> below
+        image: <YOUR_DOCKERHUB_USERNAME>/exam-app:v1
+        ports:
+        - containerPort: 3000
+        env:
+        # Intentionally setting a broken URL for the troubleshooting scenario
+        - name: DATABASE_URL
+          value: "mongodb://broken-connection"
