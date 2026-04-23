@@ -3,44 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps Exam App</title>
+    <title>ExamStore | Premium E-Commerce</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; }
-        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); display: inline-block; }
-        h1 { color: #333; }
-        #status { font-weight: bold; margin-top: 20px; padding: 10px; border-radius: 4px; }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: #f8f9fa; color: #333; }
+        
+        /* Header */
+        header { background-color: #111; color: #fff; padding: 20px 50px; display: flex; justify-content: space-between; align-items: center; }
+        header h1 { font-size: 24px; font-weight: 600; letter-spacing: 1px; }
+        nav a { color: #fff; text-decoration: none; margin-left: 20px; font-weight: 300; transition: color 0.3s; }
+        nav a:hover { color: #007bff; }
+        
+        /* Hero Section */
+        .hero { background: linear-gradient(135deg, #007bff, #00c6ff); color: white; text-align: center; padding: 80px 20px; }
+        .hero h2 { font-size: 48px; margin-bottom: 10px; }
+        .hero p { font-size: 18px; font-weight: 300; margin-bottom: 20px; }
+        
+        /* DevOps Status Widget */
+        .status-widget { background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 30px; display: inline-flex; align-items: center; cursor: pointer; transition: background 0.3s; }
+        .status-widget:hover { background: rgba(0,0,0,0.4); }
+        .status-indicator { width: 10px; height: 10px; border-radius: 50%; background-color: #ffc107; margin-right: 10px; }
+        .status-widget.success .status-indicator { background-color: #28a745; }
+        .status-widget.error .status-indicator { background-color: #dc3545; }
+        
+        /* Products Grid */
+        .container { max-width: 1200px; margin: 50px auto; padding: 0 20px; }
+        .section-title { text-align: center; margin-bottom: 40px; font-size: 32px; font-weight: 600; color: #111; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; }
+        
+        /* Product Card */
+        .card { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 20px; text-align: center; }
+        .card-body h3 { font-size: 20px; margin-bottom: 10px; color: #111; }
+        .card-body p { font-size: 18px; color: #007bff; font-weight: 600; margin-bottom: 15px; }
+        .btn { background: #111; color: #fff; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: 600; transition: background 0.3s; }
+        .btn:hover { background: #007bff; }
+        
+        /* Footer */
+        footer { background: #111; color: #888; text-align: center; padding: 30px 20px; margin-top: 50px; font-size: 14px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to the DevOps Exam App</h1>
-        <p>Frontend is running successfully.</p>
-        <button onclick="checkStatus()">Check Backend & Database Status</button>
-        <div id="status"></div>
+
+    <header>
+        <h1>ExamStore</h1>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#">Shop</a>
+            <a href="#">Cart (0)</a>
+        </nav>
+    </header>
+
+    <div class="hero">
+        <h2>Upgrade Your Lifestyle</h2>
+        <p>Premium products, perfectly containerized for your exam.</p>
+        
+        <!-- DevOps Requirement: Kept the status check but integrated into the design -->
+        <div class="status-widget" onclick="checkStatus()" id="statusWidget">
+            <div class="status-indicator" id="statusIndicator"></div>
+            <span id="statusText">System Diagnostic: Click to Verify DB Connection</span>
+        </div>
     </div>
 
+    <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="grid" id="productGrid">
+            <!-- Products will be loaded here via API -->
+            <p style="text-align: center; width: 100%;">Loading catalog from backend...</p>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 ExamStore - Deployed via Docker & Kubernetes on Azure.
+    </footer>
+
     <script>
+        // Fetch products from the backend API
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = ''; // Clear loading text
+                
+                products.forEach(product => {
+                    const card = `
+                        <div class="card">
+                            <img src="${product.image}" alt="${product.name}">
+                            <div class="card-body">
+                                <h3>${product.name}</h3>
+                                <p>${product.price}</p>
+                                <button class="btn">Add to Cart</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += card;
+                });
+            } catch (error) {
+                document.getElementById('productGrid').innerHTML = '<p style="color:red; text-align:center;">Error loading catalog. Is the backend running?</p>';
+            }
+        }
+
+        // DevOps specific status check (Testing DB connection)
         async function checkStatus() {
-            const statusDiv = document.getElementById('status');
-            statusDiv.textContent = 'Checking...';
-            statusDiv.className = '';
+            const widget = document.getElementById('statusWidget');
+            const text = document.getElementById('statusText');
+            text.textContent = 'Verifying connection...';
+            
             try {
                 const response = await fetch('/api/status');
                 const data = await response.json();
                 if (response.ok) {
-                    statusDiv.textContent = data.message;
-                    statusDiv.className = 'success';
+                    text.textContent = 'System Healthy: ' + data.message;
+                    widget.className = 'status-widget success';
                 } else {
-                    statusDiv.textContent = data.message;
-                    statusDiv.className = 'error';
+                    text.textContent = 'System Error: ' + data.message;
+                    widget.className = 'status-widget error';
                 }
             } catch (error) {
-                statusDiv.textContent = 'Failed to connect to backend API.';
-                statusDiv.className = 'error';
+                text.textContent = 'Critical Failure: API Unreachable';
+                widget.className = 'status-widget error';
             }
         }
+
+        // Initialize
+        loadProducts();
     </script>
 </body>
 </html>
