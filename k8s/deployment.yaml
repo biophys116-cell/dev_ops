@@ -17,7 +17,7 @@ spec:
       containers:
       - name: exam-app
         # Make sure to replace <YOUR_DOCKERHUB_USERNAME> below
-        image: umarnawaz001/exam-app:v1
+        image: umarnawaz001/exam-app:fa23-bcs-138
         ports:
         - containerPort: 3000
         env:
